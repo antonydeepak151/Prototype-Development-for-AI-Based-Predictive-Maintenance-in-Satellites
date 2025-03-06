@@ -62,6 +62,7 @@ rpds-py==0.23.1
 scikit-image==0.24.0
 scikit-learn==1.5.1
 scipy==1.13.1
+seaborn==0.13.2
 setuptools==75.8.2
 six==1.16.0
 smmap==5.0.2
@@ -85,3 +86,4 @@ uvicorn==0.34.0
 visions==0.7.6
 watchdog==6.0.0
 wordcloud==1.9.4
+ydata-profiling==4.13.0
