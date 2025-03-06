@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: fastapi-backend
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port 8000
+    envVars:
+      - key: DB_HOST
+        value: your-mysql-host
+      - key: DB_USER
+        value: your-mysql-user
+      - key: DB_PASS
+        value: your-mysql-password
+      - key: DB_NAME
+        value: your-database-name
+
+  - type: web
+    name: streamlit-dashboard
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run dashboard.py --server.port 8501 --server.address 0.0.0.0
