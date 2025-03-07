@@ -6,30 +6,43 @@ import pandas as pd
 import pymysql
 from sqlalchemy import create_engine
 import plotly.express as px
-import urllib.parse  # Import for password encoding
+import urllib.parse  # ✅ Import for password encoding
 
-# ✅ Load Database Credentials from Environment Variables (Render or Local)
+# ✅ Load Database Credentials from Environment Variables
 db_config = {
-    "host": os.getenv("MYSQLHOST", "127.0.0.1"),  # Default to localhost for local testing
+    "host": os.getenv("MYSQLHOST", "caboose.proxy.rlwy.net"),  # ✅ Updated to Railway's host
     "user": os.getenv("MYSQLUSER", "root"),
     "password": os.getenv("MYSQLPASSWORD", "@nees115"),  
     "database": os.getenv("MYSQLDATABASE", "satellite_maintenance"),
-    "port": os.getenv("MYSQLPORT", "3306")  # Ensure port is included
+    "port": os.getenv("MYSQLPORT", "17008"),  # ✅ Updated Railway's MySQL port (not 3306)
 }
 
 # ✅ Encode password to handle special characters
 encoded_password = urllib.parse.quote_plus(db_config["password"])
 
 # ✅ Create SQLAlchemy Engine with Port Support
-try:
-    db_url = f"mysql+pymysql://{db_config['user']}:{encoded_password}@{db_config['host']}:{db_config['port']}/{db_config['database']}"
-    engine = create_engine(db_url)
-    st.success("✅ Successfully connected to the database!")
-except Exception as e:
-    st.error(f"🚨 Database Connection Error: {str(e)}")
+engine = None  # Start with None and connect only if needed
+
+def connect_db():
+    """Creates and returns a database engine."""
+    global engine
+    try:
+        db_url = f"mysql+pymysql://{db_config['user']}:{encoded_password}@{db_config['host']}:{db_config['port']}/{db_config['database']}"
+        engine = create_engine(db_url, pool_pre_ping=True)
+        st.success("✅ Successfully connected to the database!")
+    except Exception as e:
+        st.error(f"🚨 Database Connection Error: {str(e)}")
+        engine = None
+
+# ✅ Connect to DB before fetching data
+connect_db()
 
 def fetch_anomalies():
     """Fetch latest anomalies from the database"""
+    if engine is None:
+        st.error("⚠️ No database connection available.")
+        return pd.DataFrame()
+
     try:
         with engine.connect() as connection:
             query = "SELECT * FROM satellite_anomalies ORDER BY timestamp DESC LIMIT 100"
