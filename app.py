@@ -6,22 +6,22 @@ import pandas as pd
 from pydantic import BaseModel
 import uvicorn
 
-# Load the trained model
+# ✅ Load the trained model
 model = joblib.load("random_forest_satellite.pkl")
 
-# Initialize FastAPI app
+# ✅ Initialize FastAPI app
 app = FastAPI()
 
-# MySQL Database Connection (Using Environment Variables from Railway)
+# ✅ MySQL Database Connection (Updated for Railway)
 db_config = {
-    "host": os.getenv("MYSQLHOST", "127.0.0.1"),
+    "host": os.getenv("MYSQLHOST", "caboose.proxy.rlwy.net"),  # ✅ Updated to Railway's host
     "user": os.getenv("MYSQLUSER", "root"),
     "password": os.getenv("MYSQLPASSWORD", "@nees115"),
     "database": os.getenv("MYSQLDATABASE", "satellite_maintenance"),
-    "port": int(os.getenv("MYSQLPORT", 3306))  # Add MySQL port
+    "port": int(os.getenv("MYSQLPORT", 17008)),  # ✅ Updated Railway's MySQL port (not 3306)
 }
 
-# Define Input Schema
+# ✅ Define Input Schema
 class SensorData(BaseModel):
     cpu_load: float
     battery_charge: float
@@ -34,25 +34,25 @@ class SensorData(BaseModel):
     power: float
     external_temperature: float
 
-# Root Endpoint
+# ✅ Root Endpoint
 @app.get("/")
 def home():
     return {"message": "Satellite Maintenance Prediction API is running!"}
 
-# Database Connection Test Endpoint
+# ✅ Database Connection Test Endpoint
 @app.get("/test_db")
 def test_db():
     try:
         connection = pymysql.connect(**db_config)
         cursor = connection.cursor()
-        cursor.execute("SELECT 1")  # Test query
+        cursor.execute("SELECT 1")  # ✅ Test query
         cursor.close()
         connection.close()
-        return {"message": "Database connection successful"}
+        return {"message": "✅ Database connection successful"}
     except Exception as e:
-        return {"error": f"Database connection failed: {str(e)}"}
+        return {"error": f"🚨 Database connection failed: {str(e)}"}
 
-# Prediction Endpoint with Anomaly Storage
+# ✅ Prediction Endpoint with Anomaly Storage
 @app.post("/predict")
 def predict(data: SensorData):
     try:
@@ -87,19 +87,19 @@ def predict(data: SensorData):
                 print("✅ Anomaly stored in MySQL!")  # Debug log
 
             except pymysql.MySQLError as db_err:
-                return {"error": f"Database error: {str(db_err)}"}
+                return {"error": f"🚨 Database error: {str(db_err)}"}
 
         return {"anomaly": int(prediction)}
 
     except Exception as e:
-        return {"error": f"Prediction failed: {str(e)}"}
+        return {"error": f"⚠️ Prediction failed: {str(e)}"}
 
-# Fetch Latest Sensor Data from MySQL
+# ✅ Fetch Latest Sensor Data from MySQL
 @app.get("/fetch-latest")
 def fetch_latest_data():
     try:
         connection = pymysql.connect(**db_config)
-        cursor = connection.cursor(pymysql.cursors.DictCursor)  # Use DictCursor for better readability
+        cursor = connection.cursor(pymysql.cursors.DictCursor)  # ✅ Use DictCursor for better readability
         
         query = """
         SELECT cpu_load, battery_charge, radiation_exposure, 
@@ -118,12 +118,12 @@ def fetch_latest_data():
         if row:
             return {"latest_data": row}
         else:
-            return {"message": "No data found!"}
+            return {"message": "⚠️ No data found!"}
 
     except Exception as e:
         return {"error": str(e)}
 
-# Get the PORT environment variable (default: 8000)
+# ✅ Get the PORT environment variable (default: 8000)
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 8000))
     uvicorn.run(app, host="0.0.0.0", port=port)
