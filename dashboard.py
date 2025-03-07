@@ -12,7 +12,7 @@ import urllib.parse  # ✅ Import for password encoding
 db_config = {
     "host": os.getenv("MYSQLHOST", "caboose.proxy.rlwy.net"),  # ✅ Updated to Railway's host
     "user": os.getenv("MYSQLUSER", "root"),
-    "password": os.getenv("MYSQLPASSWORD", "@nees115"),  
+    "password": os.getenv("MYSQLPASSWORD", "Anto115"),  
     "database": os.getenv("MYSQLDATABASE", "satellite_maintenance"),
     "port": os.getenv("MYSQLPORT", "17008"),  # ✅ Updated Railway's MySQL port (not 3306)
 }
