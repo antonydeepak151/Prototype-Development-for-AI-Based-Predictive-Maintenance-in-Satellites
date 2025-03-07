@@ -13,7 +13,8 @@ db_config = {
     "host": os.getenv("MYSQLHOST", "127.0.0.1"),  # Default to localhost for local testing
     "user": os.getenv("MYSQLUSER", "root"),
     "password": os.getenv("MYSQLPASSWORD", "@nees115"),  
-    "database": os.getenv("MYSQLDATABASE", "satellite_maintenance")
+    "database": os.getenv("MYSQLDATABASE", "satellite_maintenance"),
+    "port": os.getenv("MYSQLPORT", "3306")  # Ensure port is included
 }
 
 # ✅ Encode password to handle special characters
@@ -21,7 +22,8 @@ encoded_password = urllib.parse.quote_plus(db_config["password"])
 
 # ✅ Create SQLAlchemy Engine with Port Support
 try:
-    engine = create_engine(f"mysql+pymysql://{db_config['user']}:{encoded_password}@{db_config['host']}/{db_config['database']}")
+    db_url = f"mysql+pymysql://{db_config['user']}:{encoded_password}@{db_config['host']}:{db_config['port']}/{db_config['database']}"
+    engine = create_engine(db_url)
     st.success("✅ Successfully connected to the database!")
 except Exception as e:
     st.error(f"🚨 Database Connection Error: {str(e)}")
