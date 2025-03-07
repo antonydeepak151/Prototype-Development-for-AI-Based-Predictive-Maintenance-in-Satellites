@@ -12,12 +12,13 @@ model = joblib.load("random_forest_satellite.pkl")
 # Initialize FastAPI app
 app = FastAPI()
 
-# MySQL Database Connection
+# MySQL Database Connection (Using Environment Variables from Railway)
 db_config = {
-    "host": "127.0.0.1",
-    "user": "root",
-    "password": "@nees115",
-    "database": "satellite_maintenance"
+    "host": os.getenv("MYSQLHOST", "127.0.0.1"),
+    "user": os.getenv("MYSQLUSER", "root"),
+    "password": os.getenv("MYSQLPASSWORD", "@nees115"),
+    "database": os.getenv("MYSQLDATABASE", "satellite_maintenance"),
+    "port": int(os.getenv("MYSQLPORT", 3306))  # Add MySQL port
 }
 
 # Define Input Schema
@@ -124,5 +125,5 @@ def fetch_latest_data():
 
 # Get the PORT environment variable (default: 8000)
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8000))
+    port = int(os.getenv("PORT", 8000))
     uvicorn.run(app, host="0.0.0.0", port=port)
