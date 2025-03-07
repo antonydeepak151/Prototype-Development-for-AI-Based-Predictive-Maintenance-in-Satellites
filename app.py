@@ -1,8 +1,10 @@
+import os
 from fastapi import FastAPI
 import joblib
 import pymysql
 import pandas as pd
 from pydantic import BaseModel
+import uvicorn
 
 # Load the trained model
 model = joblib.load("random_forest_satellite.pkl")
@@ -119,3 +121,8 @@ def fetch_latest_data():
 
     except Exception as e:
         return {"error": str(e)}
+
+# Get the PORT environment variable (default: 8000)
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
