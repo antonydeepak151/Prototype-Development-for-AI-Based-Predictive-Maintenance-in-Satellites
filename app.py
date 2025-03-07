@@ -18,7 +18,7 @@ db_config = {
     "user": os.getenv("MYSQLUSER", "root"),
     "password": os.getenv("MYSQLPASSWORD", "Anto115"),  # ✅ Corrected password
     "database": os.getenv("MYSQLDATABASE", "satellite_maintenance"),
-    "port": int(os.getenv("MYSQLPORT", 17008)),  # ✅ Updated Railway's MySQL port (not 3306)
+    "port": int(os.getenv("MYSQLPORT", 3306)),  # ✅ Updated Railway's MySQL port (not 3306)
 }
 
 # ✅ Define Input Schema
