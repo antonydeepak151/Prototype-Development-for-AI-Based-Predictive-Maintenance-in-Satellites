@@ -1,4 +1,3 @@
-import os
 from fastapi import FastAPI
 import joblib
 import pymysql
@@ -12,13 +11,13 @@ model = joblib.load("random_forest_satellite.pkl")
 # ✅ Initialize FastAPI app
 app = FastAPI()
 
-# ✅ MySQL Database Connection (Updated for Railway)
+# ✅ MySQL Database Connection (LOCAL)
 db_config = {
-    "host": os.getenv("MYSQLHOST", "caboose.proxy.rlwy.net"),  # ✅ Updated to Railway's host
-    "user": os.getenv("MYSQLUSER", "root"),
-    "password": os.getenv("MYSQLPASSWORD", "Anto115"),  # ✅ Corrected password
-    "database": os.getenv("MYSQLDATABASE", "satellite_maintenance"),
-    "port": int(os.getenv("MYSQLPORT", 3306)),  # ✅ Updated Railway's MySQL port (not 3306)
+    "host": "127.0.0.1",  # ✅ Local MySQL server
+    "user": "root",  # ✅ Change if using a different MySQL user
+    "password": "@nees115",  # ✅ Set your actual local MySQL password
+    "database": "satellite_maintenance",  # ✅ Local database name
+    "port": 3306,  # ✅ Default MySQL port
 }
 
 # ✅ Define Input Schema
@@ -123,7 +122,6 @@ def fetch_latest_data():
     except Exception as e:
         return {"error": str(e)}
 
-# ✅ Get the PORT environment variable (default: 8000)
+# ✅ Run FastAPI on Localhost
 if __name__ == "__main__":
-    port = int(os.getenv("PORT", 8000))
-    uvicorn.run(app, host="0.0.0.0", port=port)
+    uvicorn.run(app, host="0.0.0.0", port=8000)  # ✅ Runs on localhost:8000
