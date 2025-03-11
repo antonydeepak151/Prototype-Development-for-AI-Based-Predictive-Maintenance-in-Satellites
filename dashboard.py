@@ -78,4 +78,4 @@ else:
 
 # ✅ Refresh Button for Live Data Updates
 if st.button("🔄 Refresh Data"):
-    st.experimental_rerun()  # ✅ Refresh Streamlit when clicked
+    st.rerun()  # ✅ Fixed: Use st.rerun() instead of deprecated st.experimental_rerun()
